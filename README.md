@@ -31,12 +31,12 @@ By default, `MATLAB.jl` uses the MATLAB installation with the greatest version n
 
 ### Linux
 
-1. Make sure ``matlab`` is in executable path. 
+1. Make sure ``matlab`` is in executable path.
 
-2. Make sure ``csh`` is installed. (Note: MATLAB for Linux relies on ``csh`` to open an engine session.) 
-	
+2. Make sure ``csh`` is installed. (Note: MATLAB for Linux relies on ``csh`` to open an engine session.)
+
 	To install ``csh`` in Debian/Ubuntu/Linux Mint, you may type in the following command in terminal:
-	
+
 	```bash
 	sudo apt-get install csh
 	```
@@ -63,7 +63,7 @@ One can use the function ``mxarray`` to create MATLAB variables (of type ``MxArr
 
 ```julia
 mxarray(Float64, n)   # creates an n-by-1 MATLAB zero array of double valued type
-mxarray(Int32, m, n)  # creates an m-by-n MATLAB zero array of int32 valued type 
+mxarray(Int32, m, n)  # creates an m-by-n MATLAB zero array of int32 valued type
 mxarray(Bool, m, n)   # creates a MATLAB logical array of size m-by-n
 
 mxarray(Float64, (n1, n2, n3))  # creates a MATLAB array of size n1-by-n2-by-n3
@@ -123,7 +123,7 @@ You may access attributes and data of a MATLAB variable through the functions pr
 ```julia
 # suppose x is of type MxArray
 nrows(x)    # returns number of rows in x
-ncols(x)    # returns number of columns in x 
+ncols(x)    # returns number of columns in x
 nelems(x)   # returns number of elements in x
 ndims(x)    # returns number of dimensions in x
 size(x)     # returns the size of x as a tuple
@@ -195,7 +195,7 @@ read_matfile(filename)    # returns a dictionary that maps each variable name
 write_matfile(filename; name1=v1, name2=v2, ...)  # writes all variables given in the
                                                   # keyword argument list to a MAT file
 ```
-Both ``read_matfile`` and ``write_matfile`` will close the MAT file handle before returning. 
+Both ``read_matfile`` and ``write_matfile`` will close the MAT file handle before returning.
 
 **Examples:**
 
@@ -206,11 +206,11 @@ struct S
     z::Vector{Float64}
 end
 
-write_matfile("test.mat"; 
-    a = Int32[1 2 3; 4 5 6], 
-    b = [1.2, 3.4, 5.6, 7.8], 
-    c = [[0.0, 1.0], [1.0, 2.0], [1.0, 2.0, 3.0]], 
-    d = Dict("name"=>"MATLAB", "score"=>100.0), 
+write_matfile("test.mat";
+    a = Int32[1 2 3; 4 5 6],
+    b = [1.2, 3.4, 5.6, 7.8],
+    c = [[0.0, 1.0], [1.0, 2.0], [1.0, 2.0, 3.0]],
+    d = Dict("name"=>"MATLAB", "score"=>100.0),
     s = "abcde",
     ss = [S(1.0, true, [1., 2.]), S(2.0, false, [3., 4.])] )
 ```
@@ -287,9 +287,21 @@ xx, yy = mxcall(:meshgrid, 2, x, y)
 
 ``mxcall`` puts the input arguments to the MATLAB workspace (using mangled names), evaluates the function call in MATLAB, and retrieves the variable from the MATLAB session. This function is mainly provided for convenience. However, you should keep in mind that it may incur considerable overhead due to the communication between MATLAB and Julia domain.
 
+##### MATLAB REPL
+
+You can enter a REPL for the default MATLAB session by pressing the `'`-key.
+
+```julia
+julia> # press ' key
+MATLAB> a = 6
+MATLAB> # backspace
+julia> @mget a
+6.0
+```
+
 ##### `@mget` and `@mput`
 
-The macro `@mget` can be used to extract the value of a MATLAB variable into Julia 
+The macro `@mget` can be used to extract the value of a MATLAB variable into Julia
 ```julia
 julia> mat"a = 6"
 julia> @mget a
@@ -357,4 +369,3 @@ r2 = jarray(r2_mx)
 close(s1)  # close session s1
 close(s2)  # close session s2
 ```
-
