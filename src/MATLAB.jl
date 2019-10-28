@@ -45,6 +45,7 @@ include("mxarray.jl")
 include("matfile.jl")
 include("engine.jl")
 include("matstr.jl")
+include("MatlabRepl.jl")
 
 if iswindows()
     # workaround "primary message table for module 77" error
@@ -165,6 +166,11 @@ function __init__()
     mat_get_variable[] = matfunc(:matGetVariable)
     mat_put_variable[] = matfunc(:matPutVariable)
     mat_get_dir[]      = matfunc(:matGetDir)
+
+    # MATLAB REPL
+    if isdefined(Base, :active_repl) && isinteractive() && typeof(Base.active_repl) ≠ REPL.BasicREPL &&    !matlabReplInitialized(Base.active_repl)
+         initializeMatlabRepl(Base.active_repl)
+    end
 
 end
 
