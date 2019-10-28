@@ -8,6 +8,14 @@ function repl_eval(script::String, stdout::IO, stderr::IO)
     eval_string(script)
 end
 
+function simple_showerror(io::IO, er)
+    Base.with_output_color(:red, io) do io
+        print(io, "ERROR: ")
+        showerror(io, er)
+        println(io)
+    end
+end
+
 function createMatlabRepl(repl, main)
     mat_mode = LineEdit.Prompt(prompt;
     prompt_prefix=orange,
@@ -15,7 +23,7 @@ function createMatlabRepl(repl, main)
     sticky=true);
 
     hp = main.hist
-    hp.mode_mapping[:r] = mat_mode
+    hp.mode_mapping[:matlab] = mat_mode
     mat_mode.hist = hp
     mat_mode.on_enter = (s) -> true
     mat_mode.on_done = (s, buf, ok) -> begin
@@ -29,8 +37,7 @@ function createMatlabRepl(repl, main)
                 repl_eval(script, repl.t.out_stream, repl.t.err_stream)
             catch y
                 # should never reach
-                # TODO
-                #simple_showerror(repl.t.err_stream, y)
+                simple_showerror(repl.t.err_stream, y)
             end
         end
         REPL.prepare_next(repl)
