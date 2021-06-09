@@ -1,6 +1,5 @@
 module MATLAB
 
-using Base.Sys: islinux, iswindows, isapple
 using Libdl
 using SparseArrays
 
@@ -30,8 +29,15 @@ export MSession, MatFile,
        mxcall,
        @mput, @mget, @mat_str
 
-if iswindows()
+if Sys.iswindows()
     export show_msession, hide_msession, get_msession_visiblity
+end
+
+const depsfile = joinpath(dirname(@__DIR__), "deps", "deps.jl")
+if isfile(depsfile)
+    include(depsfile)
+else
+    error("MATLAB is not properly installed. Please run Pkg.build(\"MATLAB\") and restart Julia.")
 end
 
 # exceptions
@@ -40,14 +46,13 @@ struct MEngineError <: Exception
 end
 
 include("init.jl") # initialize Refs
-include("mxbase.jl")
 include("mxarray.jl")
 include("matfile.jl")
 include("engine.jl")
 include("matstr.jl")
 include("MatlabRepl.jl")
 
-if iswindows()
+if Sys.iswindows()
     # workaround "primary message table for module 77" error
     # creates a dummy Engine session and keeps it open so the libraries used by all other
     # Engine clients are not loaded and unloaded repeatedly
@@ -65,14 +70,21 @@ if iswindows()
     end
 end
 
-function __init__()
+# helper library access function
+engfunc(fun::Symbol) = Libdl.dlsym(libeng[], fun)
+mxfunc(fun::Symbol)  = Libdl.dlsym(libmx[], fun)
+matfunc(fun::Symbol) = Libdl.dlsym(libmat[], fun)
 
+function __init__()
+    check_deps()
+
+    if libmx_size > 0 # non-zero size library path
 
     # load libraries
 
-    libmx[]  = Libdl.dlopen(joinpath(matlab_libpath(), "libmx"), Libdl.RTLD_GLOBAL)
-    libmat[] = Libdl.dlopen(joinpath(matlab_libpath(), "libmat"), Libdl.RTLD_GLOBAL)
-    libeng[] = Libdl.dlopen(joinpath(matlab_libpath(), "libeng"), Libdl.RTLD_GLOBAL)
+    libmx[]  = Libdl.dlopen(joinpath(matlab_libpath, "libmx"), Libdl.RTLD_GLOBAL)
+    libmat[] = Libdl.dlopen(joinpath(matlab_libpath, "libmat"), Libdl.RTLD_GLOBAL)
+    libeng[] = Libdl.dlopen(joinpath(matlab_libpath, "libeng"), Libdl.RTLD_GLOBAL)
 
     # engine functions
 
@@ -172,6 +184,7 @@ function __init__()
          initializeMatlabRepl(Base.active_repl)
     end
 
+    end
 end
 
 
