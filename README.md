@@ -1,8 +1,8 @@
 ## MATLAB
 
-The `MATLAB.jl` package provides an interface for using [MATLAB™](http://www.mathworks.com/products/matlab/) from [Julia](http://julialang.org) using the MATLAB C api.  In other words, this package allows users to call MATLAB functions within Julia, thus making it easy to interoperate with MATLAB from the Julia language.
+The `MATLAB.jl` package provides an interface for using [MATLAB®](http://www.mathworks.com/products/matlab/) from [Julia](http://julialang.org) using the MATLAB C api.  In other words, this package allows users to call MATLAB functions within Julia, thus making it easy to interoperate with MATLAB from the Julia language.
 
-You cannot use `MATLAB.jl` without having purchased and installed a copy of MATLAB™ from [MathWorks](http://www.mathworks.com/). This package is available free of charge and in no way replaces or alters any functionality of MathWorks's MATLAB product.
+You cannot use `MATLAB.jl` without having purchased and installed a copy of MATLAB® from [MathWorks](http://www.mathworks.com/). This package is available free of charge and in no way replaces or alters any functionality of MathWorks's MATLAB product.
 
 ## Overview
 
@@ -13,18 +13,21 @@ Generally, this package is comprised of two aspects:
 * Communicating with MATLAB engine sessions
 
 **Warning**:
-MATLAB string arrays are not supported, and will throw an error exception. This also applies if they are nested within a MATLAB struct. This is a limitation of the MATLAB C api. The MATLAB function `convertContainedStringsToChars` may be used to facilitate conversion to a compatible format for use with `MATLAB.jl`.
+
+* MATLAB string arrays are not supported, and will throw an error exception. This also applies if they are nested within a MATLAB struct. This is a limitation of the MATLAB C api. The MATLAB function `convertContainedStringsToChars` may be used to facilitate conversion to a compatible format for use with `MATLAB.jl`.
+
+* Threading is also not supported within Julia when using the MATLAB.jl library.
 
 
 ## Installation
 
 **Important**: The procedure to setup this package consists of the following steps.
 
-By default, `MATLAB.jl` uses the MATLAB installation with the greatest version number. To specify that a specific MATLAB installation should be used, set the environment variable `MATLAB_HOME`.
+By default, `MATLAB.jl` uses the MATLAB installation with the greatest version number. To specify that a specific MATLAB installation should be used, set the environment variable `MATLAB_ROOT`.
 
 ### Windows
 
-1. Start a Command Prompt as an Administrator and enter `matlab /regserver`.
+1. For Matlab R2020a onwards, you should be able to go directly to step 2. If you encounter issues, run `matlab -batch "comserver('register')"` in the command prompt. For earlier versions of Matlab, start a command prompt as an administrator and enter `matlab /regserver`.
 
 2. From Julia run: `Pkg.add("MATLAB")`
 
@@ -261,7 +264,7 @@ As with ordinary string literals, you can also interpolate whole Julia expressio
 
 ##### `eval_string`
 
-You may also use the `eval_string` function to evaluate MATLAB code as follows		
+You may also use the `eval_string` function to evaluate MATLAB code as follows
  ```julia
 eval_string("a = sum([1,2,3])")
 ```
