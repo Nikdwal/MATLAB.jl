@@ -62,7 +62,7 @@ function createMatlabRepl(repl, main)
 
 end
 
-function initializeMatlabRepl(repl = Base.active_repl, initkey = '\'')
+function initializeMatlabRepl(repl = Base.active_repl, initkey = ')')
     mirepl = isdefined(repl,:mi) ? repl.mi : repl
     main_mode = mirepl.interface.modes[1]
     mat_mode = createMatlabRepl(mirepl, main_mode)

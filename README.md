@@ -292,10 +292,10 @@ xx, yy = mxcall(:meshgrid, 2, x, y)
 
 ##### MATLAB REPL
 
-You can enter a REPL for the default MATLAB session by pressing the `'`-key.
+You can enter a REPL for the default MATLAB session by pressing the `)`-key.
 
 ```julia
-julia> # press ' key
+julia> # press ) key
 MATLAB> a = 6
 MATLAB> # backspace
 julia> @mget a
